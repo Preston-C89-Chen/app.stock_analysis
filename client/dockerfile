@@ -1,0 +1,22 @@
+# Use an official Node.js runtime as the base image
+FROM node:14
+
+# Copy package.json and package-lock.json to the container
+COPY package*.json ./
+
+# Install app dependencies
+RUN yarn install
+
+# Copy the rest of the app's source code to the container
+COPY ./src /src
+COPY ./public /public
+COPY ./styles /styles
+
+# Build the React app
+RUN npm run dev client
+
+# Expose the port the app will run on
+EXPOSE 3000
+
+
+CMD ["yarn", "dev-client"]
