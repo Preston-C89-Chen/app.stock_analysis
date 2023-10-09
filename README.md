@@ -1,2 +1,2 @@
 # app.stock_analysis
-Open Beta Web App for financial analysis
+Open Source Web App For Financial Analysis

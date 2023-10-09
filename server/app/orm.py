@@ -22,3 +22,13 @@ class AlpacaAPI:
     return self.api.get_financials_v2(symbol=symbol, start_date=start_date, end_date=end_date)
 
   # Add more methods as needed
+
+"""
+api_key = "PKKC98KNEJSHT2EAKBJ4"
+secret_key = "QWcb9tbA9b4gxB7DjlLkWrAbFEVEPMMZhpGRi8wh"
+trade_client = tradeapi.REST(api_key,secret_key,base_url)
+start_date = '2022-01-01'
+end_date = '2022-12-31'
+symbol = 'AAPL'
+trade_client.get_financials_v2(symbol=symbol, start_date=start_date, end_date=end_date)
+"""

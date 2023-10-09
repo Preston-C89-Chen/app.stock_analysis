@@ -1,5 +1,5 @@
 from flask import Flask
-from data import function1, function2, variable1, variable2
+from data import *
 
 app = Flask(__name__)
 
@@ -11,7 +11,7 @@ def hello_world():
 @app.route('/financial_statement/{ticker}')
 def financial_statement(ticker):
   print(ticker)
-
+  
   return 
 
 if __name__ == '__main__':
