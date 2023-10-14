@@ -1,4 +1,6 @@
-"scripts": {
-  "start": "webpack serve --mode development",
-  "build": "webpack --mode production"
-}
+module.exports = {
+  plugins: [
+    require('tailwindcss'),
+    require('autoprefixer'),
+  ],
+};
