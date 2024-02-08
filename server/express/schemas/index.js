@@ -25,7 +25,8 @@ const typeDefs = gql`
   type Query {
     "Query to get tracks array for the homepage grid"
     tracksForHome: [Track!]!
-    balanceSheets: [BalanceSheet!]!
+    balanceSheets(symbol:String!): [BalanceSheet]
+    balanceSheet(symbol:String!): BalanceSheet!
   }
 
   "A track is a group of Modules that teaches about a specific topic"
@@ -53,9 +54,9 @@ const typeDefs = gql`
   }
 
   type BalanceSheet {
-    symbol: String!
-    date: String!
-    calendarYear: String!
+    symbol: String
+    date: String
+    calendarYear: String
     totalLiabilities: Float
     cashAndCashEquivalents: Float
     shortTermInvestments: Float

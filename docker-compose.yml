@@ -1,13 +1,17 @@
 version: '3'
 services:
-  financial_analysis_app:
+  financial_analysis_flask_app:
     platform: linux/amd64
     restart: always
     build:
-      context: ./server
+      context: ./server/flask
       dockerfile: Dockerfile
     ports:
       - "8080:80"
     volumes:
-      - ./server:/app
+      - ./server/flask:/flask_app
+  financial_analysis_express_app:
+    build:
+        context: ./server/express
+        dockerfile: Dockerfile
 

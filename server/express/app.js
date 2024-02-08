@@ -2,7 +2,7 @@ const { ApolloServer } = require('@apollo/server');
 const { startStandaloneServer } = require('@apollo/server/standalone');
 const { addMocksToSchema } = require('@graphql-tools/mock');
 const { makeExecutableSchema } = require('@graphql-tools/schema');
-
+const resolvers = require("./resolvers/index")
 const typeDefs = require('./schemas/index');
 
 const mocks = {
@@ -80,15 +80,25 @@ const mocks = {
     modulesCount: () => 6,
   }),
 };
-
+// {
+//   schema: addMocksToSchema({
+//     schema: makeExecutableSchema({ typeDefs }),
+//     mocks,
+//   }),
+// }
 async function startApolloServer() {
   const server = new ApolloServer({
-    schema: addMocksToSchema({
-      schema: makeExecutableSchema({ typeDefs }),
-      mocks,
-    }),
+    typeDefs,
+    resolvers
   });
-  const { url } = await startStandaloneServer(server);
+  const { url } = await startStandaloneServer(server, {
+    context: async () => {
+      const { cache } = server
+      return {
+        serverCache: cache
+      }
+    }
+  });
 
   console.log(`
       🚀  Server is running
@@ -97,66 +107,4 @@ async function startApolloServer() {
 }
 
 startApolloServer();
-// const { ApolloServer } = require('@apollo/server');
-// const { expressMiddleware } = require('@apollo/server/express4');
-// const { ApolloServerPluginDrainHttpServer } = require('@apollo/server/plugin/drainHttpServer');
-
-// const http = require('http');
-// const cors =  require('cors');
-
-
-// async function main() {let app = express();
-
-// // view engine setup
-//   app.set('views', path.join(__dirname, 'views'));
-//   app.set('view engine', 'jade');
-//   app.use(logger('dev'));
-//   app.use(express.json());
-//   app.use(express.urlencoded({ extended: false }));
-//   app.use(cookieParser());
-//   app.use(express.static(path.join(__dirname, 'public')));
-//   app.use('/', indexRouter);
-
-//   // catch 404 and forward to error handler
-//   app.use(function(req, res, next) {
-//     next(createError(404));
-//   });
-
-//   // error handler
-//   app.use(function(err, req, res, next) {
-//     // set locals, only providing error in development
-//     res.locals.message = err.message;
-//     res.locals.error = req.app.get('env') === 'development' ? err : {};
-//     // render the error page
-//     res.status(err.status || 500);
-//     res.render('error');
-//   });
-
-//   const httpServer = http.createServer(app);
-//   const server = new ApolloServer({
-//     schema,
-//     resolvers,
-//     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-//   });
-
-
-//   app.use(
-//     '/graphql',
-//     cors(),
-//     express.json(),
-//     expressMiddleware(server, {
-//       context: async ({ req }) => ({ token: req.headers.token }),
-//     }),
-//   );
-//   const { url } = await startStandaloneServer(server, {
-//     listen: { port: 4000 },
-//   });
-
-//   console.log(`🚀  Server ready at: ${url}`);
-// }
-// main();
-// npm install @apollo/server express graphql cors
-
-
-
 

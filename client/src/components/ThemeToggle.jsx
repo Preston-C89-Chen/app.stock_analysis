@@ -10,7 +10,7 @@ export default function ThemeToggle() {
         type="checkbox"
         name="light-switch"
         id="light-switch"
-        className="light-switch sr-only"
+        className="light-switch sr-only cursor-pointer"
         checked={currentTheme === 'light'}
         onChange={() => changeCurrentTheme(currentTheme === 'light' ? 'dark' : 'light')}
       />

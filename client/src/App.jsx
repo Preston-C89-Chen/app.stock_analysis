@@ -8,9 +8,12 @@ import {
 import './css/style.css';
 
 import './charts/ChartjsConfig';
-
+import FileUploader from './components/FileUploader';
+import FinancialReportTable from './partials/tables/financial-reports';
+import FlowContainer from './partials/flowCreator/FlowContainer';
 // Import pages
 import Dashboard from './pages/Dashboard';
+import DashboardClone from './pages/Dashboard_clone';
 
 function App() {
 
@@ -22,10 +25,18 @@ function App() {
     document.querySelector('html').style.scrollBehavior = ''
   }, [location.pathname]); // triggered on route change
 
+
   return (
     <>
       <Routes>
-        <Route exact path="/" element={<Dashboard />} />
+        <Route path="dashboard" element={<Dashboard />}>
+          <Route path="upload" element={<FileUploader />}/>
+          <Route path="table" element={<FinancialReportTable />}/>
+          <Route path="builder" element={<FlowContainer />}/>
+        </Route>
+
+        {/* <Route default element={<Dashboard />} /> */}
+        <Route path="/" element={<Dashboard />} />
       </Routes>
     </>
   );
