@@ -1,0 +1,6 @@
+// SqlEditor.js
+import React, { useEffect, useRef } from 'react';
+import { EditorState } from '@codemirror/state';
+import { EditorView, basicSetup } from '@codemirror/basic-setup';
+import { sql } from '@codemirror/lang-sql';
+import { oneDark } from '@codemirror/theme-one-dark';

@@ -9,6 +9,11 @@
   "dependencies": {
     "@apollo/client": "^3.8.7",
     "@clerk/clerk-react": "^4.27.1",
+    "@codemirror/lang-sql": "^6.5.5",
+    "@codemirror/language": "^6.10.1",
+    "@codemirror/state": "^6.4.0",
+    "@codemirror/theme-one-dark": "^6.1.2",
+    "@codemirror/view": "^6.24.0",
     "@neondatabase/serverless": "^0.6.0",
     "@radix-ui/colors": "^3.0.0",
     "@radix-ui/react-dialog": "^1.0.5",

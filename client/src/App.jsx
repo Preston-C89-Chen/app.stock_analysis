@@ -14,6 +14,8 @@ import FlowContainer from './partials/flowCreator/FlowContainer';
 // Import pages
 import Dashboard from './pages/Dashboard';
 import DashboardClone from './pages/Dashboard_clone';
+import EarningsContainer from './pages/earnings/EarningsContainer';
+
 
 function App() {
 
@@ -33,6 +35,7 @@ function App() {
           <Route path="upload" element={<FileUploader />}/>
           <Route path="table" element={<FinancialReportTable />}/>
           <Route path="builder" element={<FlowContainer />}/>
+          <Route path="earnings" element={<EarningsContainer />}/>
         </Route>
 
         {/* <Route default element={<Dashboard />} /> */}
