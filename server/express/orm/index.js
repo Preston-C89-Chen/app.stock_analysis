@@ -1,8 +1,7 @@
 /*
 https://site.financialmodelingprep.com/developer/docs
-workign from this site
+working from this site
 */
-
 
 const axios = require('axios');
 const fs = require('fs');
@@ -11,41 +10,10 @@ const { RESTDataSource } = require('@apollo/datasource-rest');
 const { createClient } = require('@supabase/supabase-js');
 const { createObjectCsvWriter } = require('csv-writer');
 
-// class FinancialModelingPrepAPI {
-//   constructor() {
-//       this.apiKey = process.env.FMP_API_KEY;
-//       this.baseUrl = 'https://financialmodelingprep.com/api/v3';
-//       this.baseUrl4 = 'https://financialmodelingprep.com/api/v4/';
-//   }
-
-//   async getBalanceSheetStatement(symbol) {
-  
-//       const url = `${this.baseUrl}/balance-sheet-statement/${symbol}?period=annual&apikey=${this.apiKey}`;
-//       const response = await axios.get(url);
-//       console.log('inside api',response)
-//       return response.data;
-//   }
-
-//   async getCashFlowStatement(symbol) {
-//       const url = `${this.baseUrl4}/advanced_discounted_cash_flow?symbol=${symbol}&apikey=${this.apiKey}`;
-//       const response = await axios.get(url);
-//       console.log(response);
-//       return response.data;
-//   }
-
-//   async getIncomeStatement(symbol) {
-//       const url = `${this.baseUrl}/income-statement/${symbol}?period=annual&apikey=${this.apiKey}`;
-//       const response = await axios.get(url);
-//       return response.data;
-//   }
-
-//   // Add methods for other financial statements, such as the statement of shareholders' equity and the statement of comprehensive income.
-// }
-
-class FinancialReportsAPI extends RESTDataSource {
+class FinancialReportsAPI extends RESTDataSource { 
   constructor() {
     super()
-    this.apiKey = process.env.FMP_API_KEY;
+    this.apiKey = process.env.FMP_API_KEY || "MqLQFqijRWf5sBSBmv87hJ06103erCtM";
     this.baseUrl = 'https://financialmodelingprep.com/api';
 }
 
@@ -75,32 +43,12 @@ class FinancialReportsAPI extends RESTDataSource {
   }
 }
 
-class CSVCreator {
-  constructor(data, filePath) {
-    this.data = data;
-    this.filePath = filePath
-  }
 
-  async createCSV() {
-    const csvWriter = createObjectCsvWriter({
-      path: this.filePath,
-      header: [
-        {id: 'date', title: 'DATE'},
-        {id: 'symbol', title: 'SYMBOL'},
-        //{id: 'peers', title: 'PEERS'}
-      ]
-    });
-
-    try {
-      console.log('writing this data', this.data,this.filePath)
-      await csvWriter.writeRecords(this.data);
-      console.log('The CSV file was written successfully');
-    } catch (err) {
-      console.error('Error writing CSV file', err);
-    }
+class NeonAPI {
+  constructor() {
+    this.apiKey = process.env.NE
   }
 }
-
 
 class SupabaseAPI {
   constructor() {
@@ -140,17 +88,13 @@ class SupabaseAPI {
   }
 }
 
-
-// const supa = new SupabaseAPI();
-// supa.insert();
-
 async function main() {
   const uniqueId = Date.now();
     // Ensure the csv directory exists
   const dirPath = path.join(__dirname, '..', 'csv');
   const fra = new FinancialReportsAPI();
   fra.getBalanceSheetStatement("AAPL");
-  const earnings = await fra.getEarnings("2024-02-07","2024-02-31");
+  const earnings = await fra.getEarnings("2024-02-09","2024-02-29");
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath);
     }

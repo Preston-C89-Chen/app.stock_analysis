@@ -2,13 +2,25 @@ const { FinancialReportsAPI } = require('../orm/index');
 
 const fetchBalanceSheetData = async ({symbol}) => {
   try {
-    const fmp = new FinancialReportsAPI()
-    const response = await fmp.getBalanceSheetStatement(symbol)
+    const fmp = new FinancialReportsAPI();
+    const response = await fmp.getBalanceSheetStatement(symbol);
     return response;
   } catch (err) {
     console.error(err)
   }
 }
+
+const fetchEarningsData = async ({fromDate,toDate}) => {
+  try {
+    const fmp = new FinancialReportsAPI();
+    const response = await fmp.getEarnings(fromDate,toDate);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+
+
 const resolvers = {
   Query: {
     balanceSheets: async(_, {symbol},) => {
@@ -22,7 +34,8 @@ const resolvers = {
       } catch(err) {
         console.error(err)
       }
-    }
+    },
+    earningsCalendar: async(_,{})
   }
 }
 

@@ -80,12 +80,7 @@ const mocks = {
     modulesCount: () => 6,
   }),
 };
-// {
-//   schema: addMocksToSchema({
-//     schema: makeExecutableSchema({ typeDefs }),
-//     mocks,
-//   }),
-// }
+
 async function startApolloServer() {
   const server = new ApolloServer({
     typeDefs,
