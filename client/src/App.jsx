@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, lazy, Suspense } from 'react';
 import {
   Routes,
   Route,
@@ -14,7 +14,8 @@ import FlowContainer from './partials/flowCreator/FlowContainer';
 // Import pages
 import Dashboard from './pages/Dashboard';
 import DashboardClone from './pages/Dashboard_clone';
-import EarningsContainer from './pages/earnings/EarningsContainer';
+import EarningsPage from './pages/earnings/EarningsContainer';
+// const EarningsPage = lazy(() => import('./pages/earnings/EarningsContainer'));
 
 
 function App() {
@@ -35,7 +36,7 @@ function App() {
           <Route path="upload" element={<FileUploader />}/>
           <Route path="table" element={<FinancialReportTable />}/>
           <Route path="builder" element={<FlowContainer />}/>
-          <Route path="earnings" element={<EarningsContainer />}/>
+          <Route path="earnings" element={<EarningsPage />}/>
         </Route>
 
         {/* <Route default element={<Dashboard />} /> */}

@@ -27,3 +27,18 @@ export const formatValue = (value) => Intl.NumberFormat('en-US', {
   maximumSignificantDigits: 3,
   notation: 'compact',
 }).format(value);
+
+export const getMonthlyDates = (setYear,setMonth) => {
+  const today = new Date();
+  const year = setYear || today.getFullYear();
+  const month = setMonth || today.getMonth();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  const datesArray = [];
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(year, month, day);
+    const formattedDate = date.toISOString().split('T')[0];
+    datesArray.push(formattedDate);
+  }
+  return datesArray;
+}

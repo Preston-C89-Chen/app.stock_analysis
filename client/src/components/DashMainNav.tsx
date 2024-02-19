@@ -32,6 +32,11 @@ export default function DashMainMenu() {
             Trading Bot
           </NavigationMenuLink>
         </Link>
+        <Link to={"/dashboard/earnings"}>
+          <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+            Earnings
+          </NavigationMenuLink>
+        </Link>
       </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>

@@ -1,5 +1,14 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { EarningsReportItem } from '../earnings.types';
 import {
   PaginationState,
   useReactTable,
@@ -7,103 +16,72 @@ import {
   ColumnDef,
   flexRender
 } from '@tanstack/react-table';
-
+import feb_earnings from '../mocks/feb_earnings.json';
 interface IEarningsTableProps {
-  tableData: [any]
+  tableData?: [any],
+  idx: number
+  // columns?: ColumnDef<any>
 }
 
-const columns = [
-  {
-    Header: 'Date',
-    accessor: 'date',
-  },
-  {
-    Header: 'Symbol',
-    accessor: 'symbol',
-  },
-  {
-    Header: 'EPS',
-    accessor: 'eps',
-  },
-  {
-    Header: 'Estimated EPS',
-    accessor: 'epsEstimated',
-  },
-  {
-    Header: 'Time',
-    accessor: 'time',
-  },
-  {
-    Header: 'Revenue',
-    accessor: 'revenue',
-  },
-  {
-    Header: 'Estimated Revenue',
-    accessor: 'revenueEstimated',
-  },
-  {
-    Header: 'Fiscal Date Ending',
-    accessor: 'fiscalDateEnding',
-  },
-  {
-    Header: 'Updated From Date',
-    accessor: 'updatedFromDate',
-  },
-];
-
-const EarningsTable:FC<IEarningsTableProps> = ({tableData}) => {
-  const data = [
+const EarningsTable:FC<IEarningsTableProps> = ({tableData=[],idx}) => {
+  // index of weekly earnings
+  const columns = [
     {
-      date: "2024-02-01",
-      symbol: "PIONEEREMB.BO",
-      eps: 0.01216,
-      epsEstimated: null,
-      time: "bmo",
-      revenue: 853174000,
-      revenueEstimated: null,
-      fiscalDateEnding: "2023-12-30",
-      updatedFromDate: "2024-02-16"
-    },
-    {
-      date: "2024-02-01",
-      symbol: "2692.T",
-      eps: 248.84,
-      epsEstimated: null,
-      time: "bmo",
-      revenue: null,
-      revenueEstimated: null,
-      fiscalDateEnding: "2023-12-30",
-      updatedFromDate: "2024-02-16"
+      header: 'Symbol',
+      accessorKey: 'symbol',
     }
   ];
-  const { getTableProps, headerGroups, rows, prepareRow } = useTable({ columns, data });
-  const [{pageIndex, pageSize}, setPagination] = useState({pageIndex: 0, pageSize: 10})
+
+  const table = useReactTable({
+    data: tableData,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
+  const headerText = tableData.length > 0 ? tableData[0].date : "Date"
   return (
-    <div>
-      <table {...getTableProps()}>
-      <thead>
-        {headerGroups.map(headerGroup => (
-          <tr key={headerGroup.id}>
-            {headerGroup.headers.map(column => (
-              <th key={column.id}>{column.render('Header')}</th>
-            ))}
-          </tr>
+    <Table>
+      <TableHeader>
+        {table.getHeaderGroups().map((headerGroup) => (
+          <TableRow key={headerGroup.id}>
+            {headerGroup.headers.map((header) => {
+              return (
+                <TableHead key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        headerText,
+                        header.getContext()
+                      )}
+                </TableHead>
+              )
+            })}
+          </TableRow>
         ))}
-      </thead>
-      <tbody>
-        {rows.map(row => {
-          prepareRow(row);
-          return (
-            <tr key={row.id} {...row.getRowProps()}>
-              {row.cells.map(cell => (
-                <td key={cell.id}>{cell.render('Cell')}</td>
+      </TableHeader>
+      <TableBody>
+        {table.getRowModel().rows?.length ? (
+          table.getRowModel().rows.map((row) => (
+            <TableRow
+              key={row.id}
+              data-state={row.getIsSelected() && "selected"}
+            >
+              {row.getVisibleCells().map((cell) => (
+                <TableCell key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
               ))}
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
-    </div>
+            </TableRow>
+          ))
+        ) : (
+          <TableRow>
+            <TableCell colSpan={columns.length} className="h-24 text-center">
+              No results.
+            </TableCell>
+          </TableRow>
+        )}
+      </TableBody>
+    </Table>
   )
 };
 
