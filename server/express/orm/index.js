@@ -77,10 +77,11 @@ class SupabaseAPI {
 
   async fetch(query) {
     const symbol = query?.symbol
+    console.log("symbol", symbol);
     try {
       const { data, error } = await this.client
       .from('fin_reports')
-      .select({symbol});
+      .select();
       return data;
     } catch(err) {
       console.error(err);
@@ -89,18 +90,21 @@ class SupabaseAPI {
 }
 
 async function main() {
-  const uniqueId = Date.now();
-    // Ensure the csv directory exists
-  const dirPath = path.join(__dirname, '..', 'csv');
-  const fra = new FinancialReportsAPI();
-  fra.getBalanceSheetStatement("AAPL");
-  const earnings = await fra.getEarnings("2024-02-09","2024-02-29");
-  if (!fs.existsSync(dirPath)) {
-    fs.mkdirSync(dirPath);
-    }
-  let filePath = path.join(dirPath, `earnings-${uniqueId}.csv`);
-  const csv = new CSVCreator(earnings,filePath)
-  csv.createCSV();
+  // const uniqueId = Date.now();
+  //   // Ensure the csv directory exists
+  // const dirPath = path.join(__dirname, '..', 'csv');
+  // const fra = new FinancialReportsAPI();
+  // fra.getBalanceSheetStatement("AAPL");
+  // const earnings = await fra.getEarnings("2024-02-09","2024-02-29");
+  // if (!fs.existsSync(dirPath)) {
+  //   fs.mkdirSync(dirPath);
+  //   }
+  // let filePath = path.join(dirPath, `earnings-${uniqueId}.csv`);
+  // const csv = new CSVCreator(earnings,filePath)
+  // csv.createCSV();
+  const suupa = new SupabaseAPI()
+  const res = await suupa.fetch({symbol:"AAPPL"});
+  console.log(res)
 }  
 main();
 

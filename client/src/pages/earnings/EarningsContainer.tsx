@@ -1,5 +1,6 @@
 import React, { FC, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { useParams, useNavigate } from 'react-router-dom';
 import { ChevronRightIcon, ChevronLeftIcon } from "@radix-ui/react-icons";
 import {
   Pagination,
@@ -18,16 +19,24 @@ interface IEarningsTableProps {
 
 const EarningsContainer:FC<any> = ({}) => {
   // index of weekly earnings
+  const navigate = useNavigate();
+  const { year, month, weekID } = useParams();
   const [weeklyEarnings, setWeeklyEarnings] = useState([])
   const [selectedWeek,setWeek] = useState(0);
   const [currColumns,setColumns]  = useState();
+  // const location = useLocation();
+  console.log( year, month, weekID)
   const data = feb_earnings;
 
   const nextPage = () => {
-    setWeek((prevWeek) => prevWeek + 1 < weeklyEarnings.length ? prevWeek + 1 : prevWeek);
+    const nextWeek = selectedWeek + 1 <= weeklyEarnings.length ? selectedWeek + 1 : selectedWeek; // Assuming you have logic to ensure not exceeding bounds
+    navigate(`/dashboard/earnings/${year}/${month}/w${nextWeek}`);
+    return nextWeek;
   }
   const prevPage = () => {
-    setWeek((prevWeek) => prevWeek - 1 >= 0 ? prevWeek - 1: prevWeek)
+    const previousWeek = selectedWeek - 1 >= 0 ? selectedWeek - 1 : selectedWeek;
+      navigate(`/dashboard/earnings/${year}/${month}/w${previousWeek}`);
+      return previousWeek;
   }
   useEffect(() => {
     // set table columns
@@ -35,6 +44,11 @@ const EarningsContainer:FC<any> = ({}) => {
     // we also update
     setWeeklyEarnings(groupByWeek(data))
   },[])
+
+  useEffect(() => {
+    const week = weekID ? parseInt(weekID.substring(1,10)) : 0;
+    setWeek(week)
+  },[weekID])
   return (
     <div className="rounded-md border w-100 p-20 overflow-x-auto">
         <div className="flex w-100 justify-evenly p-5">

@@ -36,7 +36,9 @@ function App() {
           <Route path="upload" element={<FileUploader />}/>
           <Route path="table" element={<FinancialReportTable />}/>
           <Route path="builder" element={<FlowContainer />}/>
-          <Route path="earnings" element={<EarningsPage />}/>
+          <Route path="earnings" element={<EarningsPage />}>
+            <Route path=":year/:month/:weekID" element={<EarningsPage />}/>
+          </Route>
         </Route>
 
         {/* <Route default element={<Dashboard />} /> */}
