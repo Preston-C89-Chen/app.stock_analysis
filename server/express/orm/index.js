@@ -8,12 +8,18 @@ const fs = require('fs');
 const path = require('path');
 const { RESTDataSource } = require('@apollo/datasource-rest');
 const { createClient } = require('@supabase/supabase-js');
-const { createObjectCsvWriter } = require('csv-writer');
+const { CSV } = require('./csv');
+require('dotenv').config();
+
 
 class FinancialReportsAPI extends RESTDataSource { 
   constructor() {
+    if (FinancialReportsAPI.instance) {
+      return FinancialReportsAPI.instance
+    }
+    FinancialReportsAPI.instance = this;
     super()
-    this.apiKey = process.env.FMP_API_KEY || "MqLQFqijRWf5sBSBmv87hJ06103erCtM";
+    this.apiKey = process.env.FMP_API_KEY;
     this.baseUrl = 'https://financialmodelingprep.com/api';
 }
 
@@ -27,7 +33,6 @@ class FinancialReportsAPI extends RESTDataSource {
   async getBalanceSheetStatement(symbol) {
     const url = `${this.baseUrl}/v3/balance-sheet-statement/${symbol}?period=annual&apikey=${this.apiKey}`;
     const response = await this.get(url);
-    console.log('inside api', response)
     return response;
   }
 
@@ -44,22 +49,20 @@ class FinancialReportsAPI extends RESTDataSource {
 }
 
 
-class NeonAPI {
-  constructor() {
-    this.apiKey = process.env.NE
-  }
-}
-
 class SupabaseAPI {
   constructor() {
-    this.apiKey = ""
+    if (SupabaseAPI.instance) {
+      return SupabaseAPI.instance;
+    }
+
+    SupabaseAPI.instance = this;
+    this.apiKey = process.env.SUPA_KEY || ""
     this.client = {}
     this._init();
   }
 
   _init() {
-    this.client = createClient('https://qbabpcqgxhxppvetnngb.supabase.co',"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiYWJwY3FneGh4cHB2ZXRubmdiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTY5OTMwNDI3MCwiZXhwIjoyMDE0ODgwMjcwfQ.mwzN1UIqaTFU0q1hGkhfBbkB1FkJ0kUhnqgKVUVOVcU")
-    console.log(this.client)
+    this.client = createClient('https://qbabpcqgxhxppvetnngb.supabase.co',this.apiKey);
   }
 
   async insert() {
@@ -72,6 +75,39 @@ class SupabaseAPI {
       return data;
     } catch(err) {
       console.error(err);
+    }
+  }
+
+  async insert_earnings(earningsData) {
+    console.log("earningsData",earningsData)
+    try {
+      const { data: insertData, error } = await this.client
+      .from('earnings')
+      .insert(earningsData)
+      .select();
+      console.log('Batch insert success:', insertData);
+      if (error) throw new Error(error.message);
+      return insertData;
+    } catch (err) {
+      console.error('Error Performing batch insert:', err)
+    }
+  }
+
+  async fetch_earnings(from, to) {
+    try {
+      const { data, error } = await this.client
+        .from('earnings')
+        .select("*")
+        .gte("date", from)
+        .lte("date", to)
+        if (error) {
+          console.error('Error fetching earnings:', error);
+          return null;
+        }
+      
+        return data;
+    } catch(error) {
+      console.error('Error Performing batch insert:', error)
     }
   }
 
@@ -89,25 +125,40 @@ class SupabaseAPI {
   }
 }
 
-async function main() {
-  // const uniqueId = Date.now();
-  //   // Ensure the csv directory exists
-  // const dirPath = path.join(__dirname, '..', 'csv');
-  // const fra = new FinancialReportsAPI();
-  // fra.getBalanceSheetStatement("AAPL");
-  // const earnings = await fra.getEarnings("2024-02-09","2024-02-29");
-  // if (!fs.existsSync(dirPath)) {
-  //   fs.mkdirSync(dirPath);
-  //   }
-  // let filePath = path.join(dirPath, `earnings-${uniqueId}.csv`);
-  // const csv = new CSVCreator(earnings,filePath)
-  // csv.createCSV();
-  const suupa = new SupabaseAPI()
-  const res = await suupa.fetch({symbol:"AAPPL"});
-  console.log(res)
+async function fetchCreateEarningsCSV() {
+  const uniqueId = Date.now();
+    // Ensure the csv directory exists
+  const dirPath = path.join(__dirname, '..', 'csv');
+  const fra = new FinancialReportsAPI();
+  const earnings = await fra.getEarnings("2024-03-01","2024-03-31");
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath);
+    }
+  let filePath = path.join(dirPath, `earnings-${uniqueId}.csv`);
+  const csv = new CSV(earnings,filePath)
+  await csv.createCSVF();
 }  
-main();
 
+async function readInsertEarningsCSV() {
+  let filePath = "/Users/prestonchen/Development/app.stock_analysis/server/express/csv/earnings-1708490006653.csv"
+  const csv = new CSV(null,filePath);
+  await csv.parse((data,error) => {
+    const supaClient = new SupabaseAPI();
+    supaClient.insert_earnings(data);
+  });
+}
+
+async function fetchEarnings() {
+  const startDate = '2024-03-01';
+  const endDate = '2024-03-20';
+  const supaClient = new SupabaseAPI();
+  const res = await supaClient.fetch_earnings(startDate,endDate);
+  return res;
+}
+
+
+//fetchCreateEarningsCSV().catch(console.error);
+//fetchEarnings().catch(console.error);
 
 module.exports.FinancialReportsAPI = FinancialReportsAPI;
 module.exports.SupabaseAPI = SupabaseAPI;

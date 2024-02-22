@@ -1,24 +1,3 @@
-// const gql = require("graphql-tag");
-
-// const typeDefs = gql`
-//   type Query {
-//     balanceSheets: [BalanceSheet!]!
-//   }
-
-  // type BalanceSheet {
-  //   symbol: String!
-  //   date: String!
-  //   calendarYear: String!
-  //   totalLiabilities: Float?
-  //   cashAndCashEquivalents: Float?
-  //   shortTermInvestments: Float?
-  //   netReceivables: Float?
-  //   link: String?
-  // }
-// `;
-
-// module.exports.typeDefs = typeDefs
-
 const gql = require('graphql-tag');
 
 const typeDefs = gql`
@@ -27,6 +6,7 @@ const typeDefs = gql`
     tracksForHome: [Track!]!
     balanceSheets(symbol:String!): [BalanceSheet]
     balanceSheet(symbol:String!): BalanceSheet!
+    earningsCalendar(from: String!,to:String!): [Earnings!]
   }
 
   "A track is a group of Modules that teaches about a specific topic"
@@ -62,6 +42,14 @@ const typeDefs = gql`
     shortTermInvestments: Float
     netReceivables: Float
     link: String
+  }
+
+  type Earnings {
+    date: String
+    symbol: String
+    eps: String
+    time: String
+    revenue: String
   }
 `;
 

@@ -1,4 +1,4 @@
-const { FinancialReportsAPI } = require('../orm/index');
+const { FinancialReportsAPI, SupabaseAPI } = require('../orm/index');
 
 const fetchBalanceSheetData = async ({symbol}) => {
   try {
@@ -35,7 +35,20 @@ const resolvers = {
         console.error(err)
       }
     },
-    earningsCalendar: async(_,{})
+    earningsCalendar: async(_,{from, to}) => {
+      const supaClient = new SupabaseAPI();
+      try {
+        let data;
+        if (from && to) {
+          data = await supaClient.fetch_earnings(from,to)
+        } else {
+          throw new Error("Must provide from to arguments, or symbol")
+        }
+        return data;
+      } catch(err) {
+        throw err;
+      }
+    }
   }
 }
 

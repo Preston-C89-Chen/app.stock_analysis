@@ -1,6 +1,6 @@
 const fs = require('fs');
+const { createObjectCsvWriter } = require('csv-writer');
 const csv = require('csv-parser');
-const { error } = require('console');
 
 class CSV {
   constructor(data, filePath) {
@@ -16,36 +16,37 @@ class CSV {
     const csvWriter = createObjectCsvWriter({
       path: this.filePath,
       header: [
-        {id: 'date', title: 'DATE'},
-        {id: 'symbol', title: 'SYMBOL'},
-        {id: 'revenue', title: 'REVENUE'},
-        {id: 'eps', title: 'EPS'}
+        {id: 'date', title: 'date'},
+        {id: 'symbol', title: 'symbol'},
+        {id: 'revenue', title: 'revenue'},
+        {id: 'eps', title: 'eps'},
+        {id: 'time', title: 'time'},
+        {id: 'revenueEstimated', title: 'revenueestimated'}
       ]
     });
 
     try {
-      console.log('writing this data', this.data,this.filePath)
-      await csvWriter.writeRecords(this.data);
+      console.log('writing this data', this.data, this.filePath)
+      const csvRes = await csvWriter.writeRecords(this.data);
+      return csvRes
       console.log('The CSV file was written successfully');
     } catch (err) {
       console.error('Error writing CSV file', err);
     }
   }
 
-  parse(callback) {
+  async parse(callback) {
     const results = [];
     fs.createReadStream(this.filePath)
       .pipe(csv())
       .on('data', (data) => results.push(data))
       .on('end', () => {
-        callback(null, results);
+        callback(results, null);
       })
       .on('error', (error) => {
-        callback(error, null);
+        callback(null, error);
       })
-  }
-
-  
+  }  
 }
 
 module.exports.CSV = CSV;
