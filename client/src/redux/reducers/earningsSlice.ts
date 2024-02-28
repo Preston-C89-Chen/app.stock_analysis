@@ -1,25 +1,43 @@
 import { createSlice } from '@reduxjs/toolkit';
-
+import { fetchEarningsCalendar } from '@api/queries/earningsReport';
 const initialState = {
   earnings: [],
   loading: false,
   error: null
 }
 
-const earningsSlice = createSlice({
-  name: 'earnings',
+export const earningsCalendarSlice = createSlice({
+  name: 'earningsCalendar',
   initialState,
   reducers: {
-    setLoading: (state, action) => {
-      state.loading = action.payload
-    },
-    setEarnings: (state, action) => {
-      state.earnings = action.payload
-    },
-    setError: (state, action) => {
-      state.error = action.payload
-    }
+    // getEarningsCalendarStart: state => {
+    //   state.loading = true;
+    // },
+    // getEarningsCalendarSuccess: (state, action) => {
+    //   state.data = action.payload;
+    //   state.loading = false;
+    // },
+    // getEarningsCalendarFailure: (state, action) => {
+    //   state.loading = false;
+    //   state.error = action.payload;
+    // },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchEarningsCalendar.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchEarningsCalendar.fulfilled, (state, action) => {
+        state.earnings = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchEarningsCalendar.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
   }
-})
+});
 
-export const { setLoading }
+
+export default earningsCalendarSlice.reducer

@@ -1,4 +1,6 @@
 import React, { FC, useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchEarningsCalendar } from "@api/queries/earningsReport";
 import { Button } from "@/components/ui/button";
 import { useParams, useNavigate } from 'react-router-dom';
 import { ChevronRightIcon, ChevronLeftIcon } from "@radix-ui/react-icons";
@@ -19,13 +21,21 @@ interface IEarningsTableProps {
 
 const EarningsContainer:FC<any> = ({}) => {
   // index of weekly earnings
+  const dispatch = useDispatch();
+  const { earnings, loading, error } = useSelector(state => state.earningsCalendar);
   const navigate = useNavigate();
   const { year, month, weekID } = useParams();
   const [weeklyEarnings, setWeeklyEarnings] = useState([])
   const [selectedWeek,setWeek] = useState(0);
   const [currColumns,setColumns]  = useState();
   // const location = useLocation();
-  console.log( year, month, weekID)
+  useEffect(() => {
+    const from = "2024-03-01";
+    const to = "2024-03-08";
+    dispatch(fetchEarningsCalendar({from,to}));
+  }, [dispatch]);
+
+  console.log("earnings",earnings)
   const data = feb_earnings;
 
   const nextPage = () => {

@@ -15,6 +15,7 @@ import FlowContainer from './partials/flowCreator/FlowContainer';
 import Dashboard from './pages/Dashboard';
 import DashboardClone from './pages/Dashboard_clone';
 import EarningsPage from './pages/earnings/EarningsContainer';
+import CommoditiesPage from './pages/commodities/CommoditiesContainer';
 // const EarningsPage = lazy(() => import('./pages/earnings/EarningsContainer'));
 
 
@@ -36,6 +37,7 @@ function App() {
           <Route path="upload" element={<FileUploader />}/>
           <Route path="table" element={<FinancialReportTable />}/>
           <Route path="builder" element={<FlowContainer />}/>
+          <Route path="commodities" element={<CommoditiesPage />} />
           <Route path="earnings" element={<EarningsPage />}>
             <Route path=":year/:month/:weekID" element={<EarningsPage />}/>
           </Route>

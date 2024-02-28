@@ -27,9 +27,9 @@ export default function DashMainMenu() {
             Table
           </NavigationMenuLink>
         </Link>
-        <Link to={"/dashboard/bot"}>
+        <Link to={"/dashboard/commodities"}>
           <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-            Trading Bot
+            Commodities
           </NavigationMenuLink>
         </Link>
         <Link to={"/dashboard/earnings"}>
