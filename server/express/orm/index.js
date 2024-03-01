@@ -9,6 +9,8 @@ const path = require('path');
 const { RESTDataSource } = require('@apollo/datasource-rest');
 const { createClient } = require('@supabase/supabase-js');
 const { CSV } = require('./csv');
+const { restClient } = require('@polygon.io/client-js');
+
 require('dotenv').config();
 
 
@@ -45,6 +47,34 @@ class FinancialReportsAPI extends RESTDataSource {
 
   async getStockPeers(symbol) {
     const url = `${this.baseURL}/v3/`
+  }
+}
+
+class PolygonAPI {
+  constructor() {
+    if (PolygonAPI.instance) {
+      return PolygonAPI.instance;
+    }
+    PolygonAPI.instance = this;
+    this.apiKey = process.env.POLYGON_API_KEY || "RJ_gcoDqtkNxGwvpRXeqDBLqqYj6Gzuv";
+    this.client = {};
+    this.baseURL = "https://api.polygon.io";
+    this.__init();
+  }
+
+  __init() {
+    console.log("got api key", this.apiKey)
+    this.client = restClient(this.apiKey)
+  }
+
+  async getCorrelations(ticker) {
+    try {
+      const correlations = await this.client.reference.tickers({ ticker })
+      return correlations;
+    } catch(err) {
+      console.error(err)
+      return console.log(err);
+    }
   }
 }
 
@@ -156,9 +186,15 @@ async function fetchEarnings() {
   return res;
 }
 
+async function fetchPoly() {
+  const polygonAPi = new PolygonAPI();
+  const res = await polygonAPi.getCorrelations("AAPL")
+  console.log(res)
+}
+
 
 //fetchCreateEarningsCSV().catch(console.error);
 //fetchEarnings().catch(console.error);
-
+fetchPoly()
 module.exports.FinancialReportsAPI = FinancialReportsAPI;
 module.exports.SupabaseAPI = SupabaseAPI;
